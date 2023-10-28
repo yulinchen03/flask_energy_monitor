@@ -7,12 +7,15 @@
 </head>
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <header class="header1 display-1">
+    <div class="headerdiv">
+        <header class="header1 lead">
         <img class="img" src="https://static.vecteezy.com/system/resources/previews/012/377/746/original/clean-energy-icon-sign-symbol-png.png" alt="logo">
         Energy Watch
-    </header>
-    <div>
-        <button onclick="goHome()">Go Home</button>
+        <img class="imgUT" src="https://www.utwente.nl/logo-stacked.png" alt="UT logo">
+        </header>
+    </div>
+    <div style="padding-top: 150px">
+        <button onclick="goHome()" class="myButton">Home</button>
         <h1>Energy consumption overview: <var id="filename"></var></h1>
          <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
         <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
@@ -86,4 +89,7 @@
         });
     }
 </script>
+<style>
+@import url('https://fonts.cdnfonts.com/css/space-grotesk');
+</style>
 </html>

@@ -3,14 +3,18 @@
 <head>
 	<title>Energy Watch</title>
     <link rel="stylesheet" href="/static/css/main.css">
+    <link rel = "icon" href =
+"https://static.vecteezy.com/system/resources/previews/012/377/746/original/clean-energy-icon-sign-symbol-png.png"
+        type = "image/x-icon">
 </head>
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <div>
-        <header class="header1 display-1">
+    <div class="headerdiv">
+        <header class="header1 lead">
         <img class="img" src="https://static.vecteezy.com/system/resources/previews/012/377/746/original/clean-energy-icon-sign-symbol-png.png" alt="logo">
         Energy Watch
-    </header>
+        <img class="imgUT" src="https://www.utwente.nl/logo-stacked.png" alt="UT logo">
+        </header>
     </div>
     <div class="row">
         <div class="column">
@@ -18,7 +22,7 @@
                 <div class="jumbotron">
                     <div class="welcome">
                         <p class="welcomeText">
-                        Welcome to Energy Watch! A tool for home energy monitoring for a more sustainable future.
+                        Welcome to Energy Watch! An analysis tool for home energy monitoring and a more sustainable future.
                     </p>
                     </div>
                     <p class="instructionText">
@@ -57,6 +61,10 @@
     fileForm = document.getElementById("fileForm");
     function getAnalysis() {
         fileForm.submit()
+        alert('File submitted')
     }
 </script>
+<style>
+@import url('https://fonts.cdnfonts.com/css/space-grotesk');
+</style>
 </html>

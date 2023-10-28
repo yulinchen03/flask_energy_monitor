@@ -24,23 +24,48 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #00693E;
+    left: 0;
+    color: white;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.headerdiv {
+    background-color: #00693E;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
 }
 
 .header1 {
-  top: 0;
-    font-size: 70px;
-  font-weight: 600;
-  background: #00FF00;
-    background: linear-gradient(to top, #00FF00 0%, #00FFFF 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-family: "Georgia";
-    padding-bottom: 20px;
+     font-family: 'Space Grotesk', sans-serif;
+     color:#fff;
+     line-height: 1.2;
+     font-weight: 500;
+     font-size: 64px;
+     margin-bottom: 10px;
+     top: 0;
+     background: #00FF00;
+     background: linear-gradient(to top, #00FF00 0%, #00FFFF 100%);
+     -webkit-background-clip: text;
+     -webkit-text-fill-color: transparent;
+     padding-bottom: 20px;
 }
 
 .img {
     max-width: 100px;
     max-height: 100px;
+    padding-top: 15px;
+    filter: brightness(0) invert(1);
+}
+
+.imgUT {
+    max-width: 200px;
+    max-height: 100px;
+    padding-top: 10px;
+    right:0;
+    position: absolute;
 }
 
 .myButton {
@@ -89,10 +114,11 @@
 }
 
 .welcomeText {
-    padding-top: 30px;
-    padding-left: 20px;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    font-size: 50px;
+    padding-top: 320px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 45px;
     letter-spacing: 0px;
     word-spacing: 0px;
     color: #00693E;
@@ -105,7 +131,7 @@
 }
 
 .instructionText {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 20px;
     letter-spacing: 0px;
     word-spacing: 0px;
@@ -133,6 +159,7 @@
 .wrapper {
   display: flex;
   justify-content: center;
+  padding-top: 30px;
 }
 
 .cta {
@@ -217,3 +244,29 @@ path.two {
         fill: white;
     }
 }
+
+input[type=file] {
+  width: 350px;
+  max-width: 100%;
+  color: #444;
+  padding: 5px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #555;
+}
+
+input[type=file]::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: #32C60C;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+}
+
+input[type=file]::file-selector-button:hover {
+  background: #00693E;
+}
+
