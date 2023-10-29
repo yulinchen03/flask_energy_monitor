@@ -75,7 +75,7 @@
     display:inline-block;
     cursor:pointer;
     color:#ffffff;
-    font-family:"Trebuchet MS";
+    font-family: 'Space Grotesk', sans-serif;
     font-size:20px;
     font-weight:bold;
     padding:13px 32px;
@@ -268,5 +268,9 @@ input[type=file]::file-selector-button {
 
 input[type=file]::file-selector-button:hover {
   background: #00693E;
+}
+
+analysisHeaders {
+    font-family: "Space Grotesk", serif;
 }
 

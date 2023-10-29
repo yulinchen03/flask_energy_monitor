@@ -14,81 +14,39 @@
         <img class="imgUT" src="https://www.utwente.nl/logo-stacked.png" alt="UT logo">
         </header>
     </div>
-    <div style="padding-top: 150px">
-        <button onclick="goHome()" class="myButton">Home</button>
-        <h1>Energy consumption overview: <var id="filename"></var></h1>
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
-        <canvas id="myChart2" style="width:100%;max-width:700px"></canvas>
+    <button onclick="goHome()" class="myButton" style="padding-top: 130px">Home
         <script>
-            const data = JSON.parse('{{ data | safe }}')
-            const xValues1 = data["xValues1"]
-            const xValues2 = data["xValues2"]
-            const yValues1 = data["yValues1"]
-            const yValues2 = data["yValues2"]
-            document.getElementById("filename").innerHTML = data["file"];
-            {# todo way charts are visualized has to change, to be done when output of algorithm is determined #}
-            new Chart("myChart", {
-              type: "line",
-              data: {
-                labels: xValues1,
-                datasets: [{
-                  label: "phase 1 power",
-                  backgroundColor:"#00693E",
-                  borderColor: "#00693E",
-                  data: yValues1
-                }]
-              },
-              options: {
-                plugins: {
-                    legend: {
-                        display: true,
-                        labels: {
-                            real_power: '#00693E'
-                        }
+            function goHome() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/',
+                    success: function(response) {
+                        document.location.href="/";
                     }
-                    }
-                }
-            });
-            new Chart("myChart2", {
-              type: "line",
-              data: {
-                labels: xValues2,
-                datasets: [{
-                  label: "phase 2 power",
-                  backgroundColor:"#32C60C",
-                  borderColor: "#32C60C",
-                  data: yValues2
-                }]
-              },
-              options: {
-                plugins: {
-                    legend: {
-                        display: true,
-                        labels: {
-                            real_power: '#32C60C'
-                        }
-                    }
-                    }
-                }
-            });
+                });
+            }
         </script>
+    </button>
+    <div class="row">
+        <div style="padding-top: 20px" class="column">
+            <h1 class="analysisHeaders">Energy consumption overview: <var id="filename"></var></h1>
+            <img id="plot">
+             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+            <script>
+                const data = JSON.parse('{{ data | safe }}')
+                const filename = data["file"]
+                const path = data["plotpath"]
+                document.getElementById("plot").src = path
+            </script>
+        </div>
+        <div style="padding-top: 20px" class="column">
+            <h1 class="analysisHeaders">Analysis: <var id="filename"></var></h1>
+        </div>
     </div>
   <footer class="footer">
     <p class="centered">© Sustainable Energy Behavior Group 2, 2023</p>
   </footer>
 </body>
-<script>
-    function goHome() {
-        $.ajax({
-            type: 'GET',
-            url: '/',
-            success: function(response) {
-                document.location.href="/";
-            }
-        });
-    }
-</script>
 <style>
 @import url('https://fonts.cdnfonts.com/css/space-grotesk');
 </style>
