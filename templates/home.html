@@ -28,9 +28,15 @@
                     <p class="instructionText">
                         Upload a .mat file from your home energy monitor here.
                     </p>
-                    <form method='POST' enctype="multipart/form-data" class="buttondiv" id="fileForm">
-                        {{ form.hidden_tag() }}
-                        {{ form.file() }}
+                    <input type="file" id="upload"
+                    onchange="document.getElementById('hidden_file').value = this.value"/>
+                    <script>
+                        var filename = $("#upload").val();
+                        filenameField = document.getElementById('filename')
+                        filenameField.value = filename
+                    </script>
+                    <form method='POST' id="fileForm">
+                        <input type="hidden" id="hidden_file" name="filename"/>
                     </form>
                     <div class="wrapper" onclick="getAnalysis()">
                       <a class="cta" href="#">
