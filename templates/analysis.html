@@ -30,13 +30,16 @@
     <div class="row">
         <div style="padding-top: 20px" class="column">
             <h1 class="analysisHeaders">Energy consumption overview: <var id="filename"></var></h1>
-            <img id="plot">
+            <img id="stackplot">
+            <img id="pie">
              <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
             <script>
                 const data = JSON.parse('{{ data | safe }}')
-                const filename = data["file"]
-                const path = data["plotpath"]
-                document.getElementById("plot").src = path
+                const filename = data["file"];
+                const plotpath_stack = data["plotpath_stack"];
+                const plotpath_pie = data["plotpath_pie"];
+                document.getElementById("stackplot").src = plotpath_stack
+                document.getElementById("pie").src = plotpath_pie
             </script>
         </div>
         <div style="padding-top: 20px" class="column">

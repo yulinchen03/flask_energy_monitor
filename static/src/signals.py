@@ -14,6 +14,8 @@ Signal is just 2 arrays with equal lengths: values and timestamps.
 class Signal:
     def __init__(self, vals, times):
         self.vals, self.times = vals, times
+        self.duration = self.times[-1] - self.times[0]
+        self.range = (self.times[0], self.times[-1])
 
     def __add__(self, other):
         if len(self.vals) != len(self.vals):
@@ -59,15 +61,9 @@ class Power(Signal):
 
     def fft(self, real=True):
         if real:
-            fft_data = np.fft.fft(self.real())
-            threshold_real = 1.45e7
-            fft_data[abs(fft_data) < threshold_real] = 0
-            denoised_data = np.fft.ifft(fft_data)
-            return denoised_data
-        else:
-            fft_data = np.fft.fft(self.reactive())
-            threshold_real = 4e6
-            fft_data[abs(fft_data) < threshold_real] = 0
+            fft_data = np.fft.fft(self.net)
+            threshold = np.mean(fft_data) + 2 * np.std(fft_data)
+            fft_data[abs(fft_data) < threshold] = 0
             denoised_data = np.fft.ifft(fft_data)
             return denoised_data
 

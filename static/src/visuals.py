@@ -2,25 +2,41 @@ from static.src.meter_data import MeterData
 from matplotlib.dates import DateFormatter
 from datetime import datetime
 from static.src.signals import Signal
-from static.src.signals import Power
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_powers_pie(powers, labels):
+def fft(powers):
+    fft_data = np.fft.fft(powers)
+    threshold_real = 0.4e6
+    fft_data[abs(fft_data) < threshold_real] = 0
+    denoised_data = np.fft.ifft(fft_data)
+    return np.real(denoised_data)
+
+
+def plot_powers_pie(powers, labels, filename):
     sizes = [sum(power) for power in powers]
-    plt.pie(sizes, labels=labels)
+    plt.pie(sizes, labels=labels, textprops={'fontsize': 10})
+    plt.legend(labels, bbox_to_anchor=(0.25, 1), loc="center right", fontsize=8,
+               bbox_transform=plt.gcf().transFigure)
+    filename = filename.split('.')[0] + '.png'
+    plotpath = f'static/plots/pie/{filename}'
+    plt.savefig(plotpath, bbox_inches='tight')
     plt.show()
 
+    return plotpath
 
-def plot_powers_stack(times, powers, labels, smooth=True):
+
+def plot_powers_stack(times, powers, labels, filename, smooth=False):
     formatted_times = [datetime.fromtimestamp(time) for time in times]
     fig, ax = plt.subplots(figsize=(10, 4))
 
-    powers = powers.fft(smooth=smooth)
+    if smooth:
+        powers = fft(powers)
 
     ax.stackplot(formatted_times, powers, labels=labels, alpha=0.6)
-    ax.legend(loc='upper left')
+    ax.legend(labels, bbox_to_anchor=(0.81, 0.5), loc="center left", fontsize=10,
+               bbox_transform=plt.gcf().transFigure)
     ax.xaxis.set_major_formatter(DateFormatter("%H:%M"))
     ax.grid(True)
 
@@ -30,6 +46,11 @@ def plot_powers_stack(times, powers, labels, smooth=True):
 
     plt.tight_layout()
     plt.show()
+    filename = filename.split('.')[0] + '.png'
+    plotpath = f'static/plots/stackplot/{filename}'
+    fig.savefig(plotpath, bbox_inches='tight')
+
+    return plotpath
 
 
 def plot_signal(signal: Signal):

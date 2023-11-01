@@ -15,13 +15,16 @@ This file is for loading and processing the raw data into the MeterData class.
 tagged_files = {}
 test_files = {}
 
-data_dir = os.path.abspath('static/data')
+data_dir_tagged = os.path.abspath('static/data')
+data_dir_test = os.path.abspath('static/files')
 
-for h in os.listdir(data_dir):
-    files = os.listdir(f'{data_dir}/{h}')
+for h in os.listdir(data_dir_tagged):
+    files = os.listdir(f'{data_dir_tagged}/{h}')
     tagged_files[h] = sorted([f for f in files if f.startswith('Tagged')])
-    test_files[h] = sorted([f for f in files if f.startswith('Testing')])
 
+for h in os.listdir(data_dir_test):
+    files = os.listdir(f'{data_dir_test}/{h}')
+    test_files[h] = sorted([f for f in files if f.startswith('Testing')])
 
 def load_all_tagged(h_dir) -> [MeterData]:
     return [load(h_dir, f) for f in tagged_files[h_dir]]
@@ -29,17 +32,21 @@ def load_all_tagged(h_dir) -> [MeterData]:
 
 def load_tagged(h_dir, idx) -> MeterData:
     """ loads a train file by index """
-    return load(h_dir, tagged_files[h_dir][idx])
+    return load(h_dir, tagged_files[h_dir][idx], tagged=True)
 
 
 def load_test(h_dir, idx) -> MeterData:
     """ loads a test file by index """
-    return load(h_dir, test_files[h_dir][idx])
+    return load(h_dir, test_files[h_dir][idx], tagged=False)
 
 
-def load(h_dir, name) -> MeterData:
+def load(h_dir, name, tagged=True) -> MeterData:
     """ loads a file by name """
-    data = loadmat(f'{data_dir}/{h_dir}/{name}')
+    if tagged:
+        data = loadmat(f'{data_dir_tagged}/{h_dir}/{name}')
+    else:
+        data = loadmat(f'{data_dir_test}/{h_dir}/{name}')
+
     return _process_raw_data(data)
 
 

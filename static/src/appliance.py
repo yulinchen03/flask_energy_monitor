@@ -15,7 +15,7 @@ class Appliance:
         result = np.zeros(len(times))
 
         for power in powers:
-            start, stop = power.time_bounds()
+            start, stop = power.range
             length = len(power.times)
 
             times_start = np.where(times == start)[0][0]

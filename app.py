@@ -1,29 +1,19 @@
-import base64
 import glob
-import html
-import random
-from datetime import datetime, timedelta
-from io import BytesIO
 
 from flask import Flask, render_template, json, url_for, request
 from flask_wtf import FlaskForm
-from matplotlib import pyplot as plt
 from wtforms import SubmitField, HiddenField
 from werkzeug.utils import secure_filename, redirect
-import os
-from wtforms.validators import InputRequired
 
 from static.src import data_loader
 from static.src.visuals import plot_powers_pie, plot_powers_stack
-from static.src.data_loader import load_all_tagged, load_tagged, load_test
+from static.src.data_loader import *
 from static.src.energy_model import EnergyModel
-from matplotlib.figure import Figure
-import pandas as pd
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '2AC579BD5E34C'
-app.config['UPLOAD_FOLDER'] = 'static/data/h1'
+app.config['UPLOAD_FOLDER'] = 'static/files'
 
 
 class UploadFileForm(FlaskForm):
@@ -46,29 +36,41 @@ def home():  # put application's code here
 def processor():
     filepath = request.args['filepath']
     filename = filepath.split('\\')[-1]
-    tagged_files = data_loader.tagged_files['h1']
-    old_plots = glob.glob('static/plots/*')
-    for plot in old_plots:
+    old_stackplot = glob.glob('static/plots/stackplot/*')
+    old_pie = glob.glob('static/plots/pie/*')
+    tagged_files = {}
+    test_files = {}
+
+    data_dir_tagged = os.path.abspath('static/data')
+    data_dir_test = os.path.abspath('static/files')
+
+    for h in os.listdir(data_dir_tagged):
+        files = os.listdir(f'{data_dir_tagged}/{h}')
+        tagged_files[h] = sorted([f for f in files if f.startswith('Tagged')])
+
+    for h in os.listdir(data_dir_test):
+        files = os.listdir(f'{data_dir_test}/{h}')
+        test_files[h] = sorted([f for f in files if f.startswith('Testing')])
+
+    for plot in old_stackplot:
+        os.remove(plot)
+
+    for plot in old_pie:
         os.remove(plot)
 
     tagged_data = data_loader.load_all_tagged('h1')
     model = EnergyModel(tagged_data)
-    plot_data(model, tagged_data[tagged_files.index(filename)])
-
-    plotpath = f'static/plots/{filename}'
-    plt.savefig(plotpath)
+    test_data = data_loader.load_test('h1', test_files['h1'].index(filename))
+    times, powers, labels = model.disaggregate(test_data)
+    plotpath_stack = plot_powers_stack(times, powers, labels, filename, smooth=False)
+    plotpath_pie = plot_powers_pie(powers, labels, filename)
 
     data = {
         "file": filename,
-        "plotpath": plotpath,
+        "plotpath_stack": plotpath_stack,
+        "plotpath_pie": plotpath_pie
     }
     return render_template('analysis.html', data=json.dumps(data))
-
-
-def plot_data(model, data):
-    times, powers, labels = model.disaggregate(data)
-    plot_powers_stack(times, powers, labels)
-    plot_powers_pie(powers, labels)
 
 
 if __name__ == '__main__':
