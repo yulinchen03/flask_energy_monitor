@@ -48,3 +48,4 @@ To use the tool, click on 'choose file', navigate to the project repository, sel
 Once the file has been selected, simply click on 'Analyse', and wait patiently. It can take a few minutes depending on your hardware's performance.
 
 Then you should be able to see a detailed analysis of the energy data you have selected, including the disaggregation of appliances.
+
