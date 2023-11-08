@@ -28,6 +28,7 @@
                     <p class="instructionText">
                         Upload a .mat file from your home energy monitor here.
                     </p>
+                    <div class="lds-dual-ring" id="loader" style="display: none"></div>
                     <div class="fileupload">
                         <input type="file" id="upload"
                         onchange="document.getElementById('hidden_file').value = this.value"/>
@@ -55,7 +56,6 @@
                       </a>
                     </div>
                 </div>
-                <div class="loader" style="display:none" id="loader"></div>
             </div>
         </div>
         <div class="column">

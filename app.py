@@ -6,14 +6,13 @@ from wtforms import SubmitField, HiddenField
 from werkzeug.utils import secure_filename, redirect
 
 from static.src import data_loader
-from static.src.visuals import plot_powers_pie, plot_powers_stack
+from static.src.visuals import plot_powers_pie, plot_powers_stack, plot_powers_bar
 from static.src.data_loader import *
 from static.src.energy_model import EnergyModel
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '2AC579BD5E34C'
-app.config['UPLOAD_FOLDER'] = 'static/files'
+app.config['UPLOAD_FOLDER'] = 'static/data/upload'
 
 
 class UploadFileForm(FlaskForm):
@@ -38,11 +37,12 @@ def processor():
     filename = filepath.split('\\')[-1]
     old_stackplot = glob.glob('static/plots/stackplot/*')
     old_pie = glob.glob('static/plots/pie/*')
+    old_bar = glob.glob('static/plots/bar/*')
     tagged_files = {}
     test_files = {}
 
-    data_dir_tagged = os.path.abspath('static/data')
-    data_dir_test = os.path.abspath('static/files')
+    data_dir_tagged = os.path.abspath('static/data/tagged')
+    data_dir_test = os.path.abspath('static/data/testing')
 
     for h in os.listdir(data_dir_tagged):
         files = os.listdir(f'{data_dir_tagged}/{h}')
@@ -58,17 +58,23 @@ def processor():
     for plot in old_pie:
         os.remove(plot)
 
+    for plot in old_bar:
+        os.remove(plot)
+
     tagged_data = data_loader.load_all_tagged('h1')
     model = EnergyModel(tagged_data)
     test_data = data_loader.load_test('h1', test_files['h1'].index(filename))
     times, powers, labels = model.disaggregate(test_data)
-    plotpath_stack = plot_powers_stack(times, powers, labels, filename, smooth=False)
+    plotpath_stack = plot_powers_stack(times, powers, labels, filename, smooth=True)
     plotpath_pie = plot_powers_pie(powers, labels, filename)
+    high_consumption_appliances, plotpath_bar = plot_powers_bar(powers, labels, filename)
 
     data = {
         "file": filename,
         "plotpath_stack": plotpath_stack,
-        "plotpath_pie": plotpath_pie
+        "plotpath_pie": plotpath_pie,
+        "plotpath_bar": plotpath_bar,
+        "high_consumption_appliances": high_consumption_appliances
     }
     return render_template('analysis.html', data=json.dumps(data))
 

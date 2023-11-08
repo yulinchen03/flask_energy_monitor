@@ -1,3 +1,8 @@
+import copy
+import math
+
+import pandas as pd
+
 from static.src.meter_data import MeterData
 from matplotlib.dates import DateFormatter
 from datetime import datetime
@@ -8,21 +13,71 @@ import numpy as np
 
 def fft(powers):
     fft_data = np.fft.fft(powers)
-    threshold_real = 0.4e6
+    threshold_real = 0.5e6
     fft_data[abs(fft_data) < threshold_real] = 0
     denoised_data = np.fft.ifft(fft_data)
     return np.real(denoised_data)
 
 
+def plot_powers_bar(powers, labels, filename):
+    sizes = [100*(sum(power)/np.sum([sum(power) for power in powers])) for power in powers]
+    sorted_sizes = []
+    sorted_labels = []
+    high_consumption_appliances = []
+    size = len(sizes)
+    sizes_copy = copy.deepcopy(sizes)
+    while len(sorted_labels) < size:
+        max_power = np.min(sizes)
+        max_index = sizes_copy.index(max_power)
+        sorted_sizes.append(max_power)
+        sizes.remove(max_power)
+        sorted_labels.append(labels[max_index])
+    plt.barh(sorted_labels, sorted_sizes, color='green')
+    plt.title('Proportion of energy consumption per appliance')
+    plt.ylabel('Appliance')
+    plt.xlabel('Proportion (%)')
+
+    for size in reversed(sorted_sizes):
+        print(size)
+        label = labels[sizes_copy.index(size)]
+        if size > 20:
+            if label != "Other":
+                high_consumption_appliances.append({'appliance': label, 'share': float("{0:.2f}".format(size))})
+        else:
+            break
+
+    filename = filename.split('.')[0] + '.png'
+    plotpath = f'static/plots/bar/{filename}'
+    plt.savefig(plotpath, bbox_inches='tight')
+    plt.close()
+
+    return high_consumption_appliances, plotpath
+
+
 def plot_powers_pie(powers, labels, filename):
-    sizes = [sum(power) for power in powers]
-    plt.pie(sizes, labels=labels, textprops={'fontsize': 10})
-    plt.legend(labels, bbox_to_anchor=(0.25, 1), loc="center right", fontsize=8,
+    sizes = [sum(power) for power in powers[1:]]
+    pie = plt.pie(sizes, textprops={'fontsize': 10})
+    plt.xlabel('', fontsize=6)
+    plt.ylabel('', fontsize=6)
+    plt.title('')
+
+    for label, t in zip(labels[1:], pie[1]):
+        x, y = t.get_position()
+        angle = int(math.degrees(math.atan2(y, x)))
+        ha = "left"
+
+        if x < 0:
+            angle -= 180
+            ha = "right"
+
+        plt.annotate(label, xy=(x, y), rotation=angle, ha=ha, va="center", rotation_mode="anchor", size=6)
+
+    plt.legend(labels, bbox_to_anchor=(0.1, 1), loc="center right", fontsize=8,
                bbox_transform=plt.gcf().transFigure)
     filename = filename.split('.')[0] + '.png'
     plotpath = f'static/plots/pie/{filename}'
     plt.savefig(plotpath, bbox_inches='tight')
-    plt.show()
+    plt.close()
 
     return plotpath
 
@@ -35,7 +90,7 @@ def plot_powers_stack(times, powers, labels, filename, smooth=False):
         powers = fft(powers)
 
     ax.stackplot(formatted_times, powers, labels=labels, alpha=0.6)
-    ax.legend(labels, bbox_to_anchor=(0.81, 0.5), loc="center left", fontsize=10,
+    ax.legend(labels, bbox_to_anchor=(0.81, 0.5), loc="center left", fontsize=8,
                bbox_transform=plt.gcf().transFigure)
     ax.xaxis.set_major_formatter(DateFormatter("%H:%M"))
     ax.grid(True)
@@ -45,10 +100,10 @@ def plot_powers_stack(times, powers, labels, filename, smooth=False):
     ax.set_title('Energy Disaggregation')
 
     plt.tight_layout()
-    plt.show()
     filename = filename.split('.')[0] + '.png'
     plotpath = f'static/plots/stackplot/{filename}'
     fig.savefig(plotpath, bbox_inches='tight')
+    plt.close()
 
     return plotpath
 

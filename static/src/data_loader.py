@@ -15,8 +15,8 @@ This file is for loading and processing the raw data into the MeterData class.
 tagged_files = {}
 test_files = {}
 
-data_dir_tagged = os.path.abspath('static/data')
-data_dir_test = os.path.abspath('static/files')
+data_dir_tagged = os.path.abspath('static/data/tagged')
+data_dir_test = os.path.abspath('static/data/testing')
 
 for h in os.listdir(data_dir_tagged):
     files = os.listdir(f'{data_dir_tagged}/{h}')
