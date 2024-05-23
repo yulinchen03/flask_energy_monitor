@@ -1,5 +1,4 @@
 # Energy monitor: Algorithm + visualizer for energy disaggregation of home appliances
-###### Sustainable Energy Behavior Group 2, 2023
 ###### Yulin Chen, Denis Krylov, Aliaksei Kovzel, Aryan Khawani
 
 Energy model is a tool for the analysis of energy readings from a home environment, and visualizing energy disaggregation of appliances, for the purpose of advising its users about how to use energy in a sustainable way.
